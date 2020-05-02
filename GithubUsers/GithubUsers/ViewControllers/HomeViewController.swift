@@ -65,6 +65,8 @@ class HomeViewController: BaseViewController {
     @objc func onClickViewDetails(_ sender: UIButton)
     {
         let userDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "UserDetailsViewController") as! UserDetailsViewController
+        userDetailVC.userName = apiResponse?.items?[sender.tag].login ?? "-"
+        userDetailVC.avatar = apiResponse?.items?[sender.tag].avatar_url ?? ""
         self.navigationController?.pushViewController(userDetailVC, animated: true)
     }
 }
@@ -91,15 +93,24 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource
     }
 }
 
-//MARK: API Calling
+// MARK: API Calling
 extension HomeViewController
 {
     func getUserList()
     {
         APIClient().postData(parameters: nil, wholeAPIUrl: "https://api.github.com/search/users?q=repos:%3E400+followers:%3E1000", httpMethod: .get, delegate: self) { (response) in
-            print(response?.total_count ?? 0)
             
-            self.apiResponse = response
+            let resp = response as! [String : Any]
+            do {
+                
+                let jsonData = try JSONSerialization.data(withJSONObject: resp, options: .prettyPrinted)
+                self.apiResponse = try JSONDecoder().decode(APIResponseModel.self, from: jsonData)
+                
+            } catch {
+                print("Unexpected error: \(error).")
+            }
+            
+            print(self.apiResponse?.total_count ?? 0)
             
             self.reloadData()
             DispatchQueue.main.async {

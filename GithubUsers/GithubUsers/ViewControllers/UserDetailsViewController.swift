@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserDetailsViewController: UIViewController {
+class UserDetailsViewController: BaseViewController {
 
     @IBOutlet weak var imgView_user: UIImageView!
     @IBOutlet weak var lbl_userName: UILabel!
@@ -18,6 +18,10 @@ class UserDetailsViewController: UIViewController {
     @IBOutlet weak var lbl_repoURL: UILabel!
     @IBOutlet weak var lbl_repoLang: UILabel!
     @IBOutlet weak var lbl_repoCreationDate: UILabel!
+    
+    var userName = ""
+    var avatar = ""
+    var apiResponse: [UserDetailsModel]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,14 +49,45 @@ class UserDetailsViewController: UIViewController {
 
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
+        
+        getUserDetails()
     }
     
     func reloadData()
     {
-        
+        imgView_user.kf.setImage(with: URL(string: avatar))
+        lbl_userName.text = userName
+        lbl_repoName.text = apiResponse?[0].name
+        lbl_repoDesc.text = apiResponse?[0].description ?? "-"
+        lbl_repoURL.text = apiResponse?[0].html_url ?? "-"
+        lbl_repoLang.text = apiResponse?[0].language ?? "-"
+        lbl_repoCreationDate.text = apiResponse?[0].created_at?.changeDateFormat() ?? "-"
     }
     
     @IBAction func onClickBack(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+    }
+}
+
+// MARK: API Calling
+extension UserDetailsViewController
+{
+    func getUserDetails()
+    {
+        APIClient().postData(parameters: nil, wholeAPIUrl: "https://api.github.com/users/\(userName)/repos", httpMethod: .get, delegate: self) { (response) in
+            
+            let resp = response as! [[String : Any]]
+            do {
+                
+                self.apiResponse = try resp.map({
+                    try JSONDecoder().decode(UserDetailsModel.self, from: try JSONSerialization.data(withJSONObject: $0, options: .prettyPrinted))
+                })
+                
+            } catch {
+                print("Unexpected error: \(error).")
+            }
+    
+            self.reloadData()
+        }
     }
 }

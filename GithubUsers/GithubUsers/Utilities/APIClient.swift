@@ -7,13 +7,12 @@ import Alamofire
 class APIClient: NSObject {
     
     var loopCount: Int!
-    var responseModel: APIResponseModel?
     
     required override init() {
         loopCount = 0                 
     }
     
-    func postData(parameters:[String:Any]?, wholeAPIUrl:String, httpMethod: HTTPMethod, delegate: BaseViewController, completionHandler: ((APIResponseModel?) -> Void)!) -> Void {
+    func postData(parameters:[String:Any]?, wholeAPIUrl:String, httpMethod: HTTPMethod, delegate: BaseViewController, completionHandler: ((Any?) -> Void)!) -> Void {
         self.loopCount += 1
         delegate.startLoading()
         
@@ -25,16 +24,7 @@ class APIClient: NSObject {
             switch response.result {
             case .success(let value) :
                 delegate.stopLoading()
-                let response = value as! [String : Any]
-                do {
-                    
-                    let jsonData = try JSONSerialization.data(withJSONObject: response, options: .prettyPrinted)
-                    self.responseModel = try JSONDecoder().decode(APIResponseModel.self, from: jsonData)
-                    
-                } catch {
-                    print("Unexpected error: \(error).")
-                }
-                completionHandler(self.responseModel)
+                completionHandler(value)
                 break
             case .failure(let encodingError):
                 print(encodingError)

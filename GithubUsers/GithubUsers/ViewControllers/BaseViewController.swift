@@ -52,3 +52,16 @@ class BaseViewController: UIViewController {
         return attrStr
     }
 }
+
+extension String {
+    func changeDateFormat() -> String
+    {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        let date = dateFormatter.date(from: self) ?? Date()
+        
+        let finalDateFormatter = DateFormatter()
+        finalDateFormatter.dateFormat = "dd-MM-yy"
+        return finalDateFormatter.string(from: date)
+    }
+}
