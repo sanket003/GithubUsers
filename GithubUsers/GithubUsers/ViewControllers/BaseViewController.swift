@@ -35,4 +35,20 @@ class BaseViewController: UIViewController {
             MBProgressHUD.hide(for: self.view, animated: true)
         }
     }
+    
+    func attributedString(from string: NSString, boldRange: NSRange?) -> NSAttributedString {
+        let fontSize = CGFloat(12.0)
+        let attrs = [
+            NSAttributedString.Key.font: UIFont.init(name: "Lato-Bold", size: fontSize),
+            NSAttributedString.Key.foregroundColor: UIColor.black
+        ]
+        let nonBoldAttribute = [
+            NSAttributedString.Key.font: UIFont.init(name: "Lato-Regular", size: fontSize),
+        ]
+        let attrStr = NSMutableAttributedString(string: string as String, attributes: nonBoldAttribute as [NSAttributedString.Key : Any])
+        if let range = boldRange {
+            attrStr.setAttributes(attrs as [NSAttributedString.Key : Any], range: range)
+        }
+        return attrStr
+    }
 }

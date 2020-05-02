@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class HomeViewController: BaseViewController {
 
@@ -15,6 +16,7 @@ class HomeViewController: BaseViewController {
     @IBOutlet weak var tblView_users: UITableView!
     
     let userTableCell = "UsersTableViewCell"
+    var apiResponse: APIResponseModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +25,9 @@ class HomeViewController: BaseViewController {
     }
 
     func initialise() {
+        
+        lbl_searchResults.text = ""
+        
         tblView_users.dataSource = self
         tblView_users.delegate = self
         
@@ -35,6 +40,18 @@ class HomeViewController: BaseViewController {
 
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
+        
+        getUserList()
+    }
+    
+    func reloadData()
+    {
+        let count : NSString = "\(apiResponse?.total_count ?? 0)" as NSString
+        let text : NSString = "Showing \(count) results" as NSString
+        
+        let attStr = self.attributedString(from: text, boldRange: text.range(of: count as String))
+        
+        lbl_searchResults.attributedText = attStr
     }
     
     @IBAction func onClickSearch(_ sender: Any) {
@@ -46,18 +63,40 @@ class HomeViewController: BaseViewController {
     }
 }
 
+//MARK: UITableView DataSource Delegate
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return apiResponse?.items?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: userTableCell, for: indexPath) as! UsersTableViewCell
+        cell.lbl_userName.text = apiResponse?.items?[indexPath.row].login
+        cell.lbl_score.text = "\(apiResponse?.items?[indexPath.row].score ?? 0)"
+        cell.imgView_user?.kf.setImage(with: URL(string: apiResponse?.items?[indexPath.row].avatar_url ?? ""))
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80.0
+    }
+}
+
+//MARK: API Calling
+extension HomeViewController
+{
+    func getUserList()
+    {
+        APIClient().postData(parameters: nil, wholeAPIUrl: "https://api.github.com/search/users?q=repos:%3E400+followers:%3E1000", httpMethod: .get, delegate: self) { (response) in
+            print(response?.total_count ?? 0)
+            
+            self.apiResponse = response
+            
+            self.reloadData()
+            DispatchQueue.main.async {
+                self.tblView_users.reloadData()
+            }
+        }
     }
 }
