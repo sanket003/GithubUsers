@@ -61,6 +61,12 @@ class HomeViewController: BaseViewController {
     @IBAction func onClickSortBy(_ sender: Any) {
     
     }
+    
+    @objc func onClickViewDetails(_ sender: UIButton)
+    {
+        let userDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "UserDetailsViewController") as! UserDetailsViewController
+        self.navigationController?.pushViewController(userDetailVC, animated: true)
+    }
 }
 
 //MARK: UITableView DataSource Delegate
@@ -75,6 +81,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource
         cell.lbl_userName.text = apiResponse?.items?[indexPath.row].login
         cell.lbl_score.text = "\(apiResponse?.items?[indexPath.row].score ?? 0)"
         cell.imgView_user?.kf.setImage(with: URL(string: apiResponse?.items?[indexPath.row].avatar_url ?? ""))
+        cell.btn_details.tag = indexPath.row
+        cell.btn_details.addTarget(self, action: #selector(self.onClickViewDetails(_:)), for: .touchUpInside)
         return cell
     }
     

@@ -25,15 +25,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="392" height="81"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.crop.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Pdq-m0-Wld">
-                                <rect key="frame" x="10" y="16" width="50" height="49"/>
+                                <rect key="frame" x="10" y="11" width="60" height="59"/>
                                 <color key="tintColor" systemColor="systemGray3Color" red="0.78039215689999997" green="0.78039215689999997" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="OpU-4U-n3T"/>
-                                    <constraint firstAttribute="width" constant="50" id="UPj-vq-0Kk"/>
+                                    <constraint firstAttribute="height" constant="60" id="OpU-4U-n3T"/>
+                                    <constraint firstAttribute="width" constant="60" id="UPj-vq-0Kk"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sanket Bhavsar" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qwy-qV-Rzy">
-                                <rect key="frame" x="68" y="23.5" width="95" height="17"/>
+                                <rect key="frame" x="78" y="23.5" width="95" height="17"/>
                                 <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -48,7 +48,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 80" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bOj-pX-You">
-                                <rect key="frame" x="68" y="40.5" width="57.5" height="17"/>
+                                <rect key="frame" x="78" y="40.5" width="57.5" height="17"/>
                                 <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
