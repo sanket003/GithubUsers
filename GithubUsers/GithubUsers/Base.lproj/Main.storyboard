@@ -117,6 +117,9 @@
                     <navigationItem key="navigationItem" title="Home" id="3J1-oO-gKS">
                         <barButtonItem key="leftBarButtonItem" image="menu" id="pjL-45-wIp">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="onClickMenu:" destination="2MG-R1-fxc" id="gxk-Vd-Kg3"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="magnifyingglass" catalog="system" id="ezb-gs-p8C">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -128,6 +131,8 @@
                     <connections>
                         <outlet property="btn_sortBy" destination="PqV-y5-oOs" id="MyX-ya-zH2"/>
                         <outlet property="lbl_searchResults" destination="ZpI-e3-3zh" id="kGl-wU-4W6"/>
+                        <outlet property="leftBarButton" destination="pjL-45-wIp" id="YCG-mh-LbR"/>
+                        <outlet property="rightBarButton" destination="ezb-gs-p8C" id="YDw-5s-lVv"/>
                         <outlet property="tblView_users" destination="8Nv-9m-qxq" id="dc0-dg-Ezu"/>
                     </connections>
                 </viewController>
@@ -250,13 +255,13 @@
                                                         </constraints>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repository Description:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xvu-Ea-SvK">
-                                                        <rect key="frame" x="88" y="10" width="318" height="14"/>
+                                                        <rect key="frame" x="88" y="10" width="318" height="15"/>
                                                         <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="12"/>
                                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fzx-JJ-jBi">
-                                                        <rect key="frame" x="88" y="24" width="318" height="20"/>
+                                                        <rect key="frame" x="88" y="25" width="318" height="19"/>
                                                         <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="16"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -285,13 +290,13 @@
                                                         </constraints>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repository URL:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ayK-eK-YWU">
-                                                        <rect key="frame" x="88" y="10" width="318" height="14"/>
+                                                        <rect key="frame" x="88" y="10" width="318" height="15"/>
                                                         <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="12"/>
                                                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xle-9Y-ykf">
-                                                        <rect key="frame" x="88" y="24" width="318" height="20"/>
+                                                        <rect key="frame" x="88" y="25" width="318" height="19"/>
                                                         <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="16"/>
                                                         <color key="textColor" name="AppBlue"/>
                                                         <nil key="highlightedColor"/>
@@ -459,7 +464,69 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6kP-WU-nhK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="24.637681159420293" y="101.78571428571428"/>
+            <point key="canvasLocation" x="-3" y="102"/>
+        </scene>
+        <!--Search View Controller-->
+        <scene sceneID="7j6-0L-in2">
+            <objects>
+                <viewController id="7Uz-VS-UP7" customClass="SearchViewController" customModule="GithubUsers" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="d7X-G1-Kmi">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" placeholder="Search by keyword" translatesAutoresizingMaskIntoConstraints="NO" id="SEB-k6-4d2">
+                                <rect key="frame" x="0.0" y="88" width="414" height="56"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="search"/>
+                            </searchBar>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="SEB-k6-4d2" firstAttribute="leading" secondItem="tkc-We-oz8" secondAttribute="leading" id="3Od-Jx-8GH"/>
+                            <constraint firstItem="SEB-k6-4d2" firstAttribute="top" secondItem="tkc-We-oz8" secondAttribute="top" id="LNs-Hg-8g5"/>
+                            <constraint firstItem="SEB-k6-4d2" firstAttribute="trailing" secondItem="tkc-We-oz8" secondAttribute="trailing" id="mES-UY-n50"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="tkc-We-oz8"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="pR5-8f-c8o">
+                        <barButtonItem key="leftBarButtonItem" image="back" id="vNh-f6-Tgs">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="onClickBack:" destination="7Uz-VS-UP7" id="YQ9-eg-BBp"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="SEB-k6-4d2" id="d5K-HO-fKn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="70q-Qz-Bl0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="88" y="836"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="wFQ-Zh-DUr">
+            <objects>
+                <navigationController storyboardIdentifier="SearchNavVC" automaticallyAdjustsScrollViewInsets="NO" id="scX-d2-ji8" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ciU-Kv-uhw">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.3294117647" green="0.42745098040000001" blue="0.69019607839999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="7Uz-VS-UP7" kind="relationship" relationship="rootViewController" id="bfc-dK-vQN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="C1P-fV-EDy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-768" y="836"/>
         </scene>
     </scenes>
     <resources>

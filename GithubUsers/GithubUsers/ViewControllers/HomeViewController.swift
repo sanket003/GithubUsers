@@ -14,9 +14,14 @@ class HomeViewController: BaseViewController {
     @IBOutlet weak var btn_sortBy: UIButton!
     @IBOutlet weak var lbl_searchResults: UILabel!
     @IBOutlet weak var tblView_users: UITableView!
+    @IBOutlet weak var leftBarButton: UIBarButtonItem!
+    @IBOutlet weak var rightBarButton: UIBarButtonItem!
     
     let userTableCell = "UsersTableViewCell"
     var apiResponse: APIResponseModel?
+    var isFromSearch = false
+    var searchForUser = ""
+    var arrSorted : [SearchItemModel]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,32 +46,133 @@ class HomeViewController: BaseViewController {
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
         
+        if isFromSearch
+        {
+            self.title = searchForUser
+            leftBarButton.image = #imageLiteral(resourceName: "back")
+            rightBarButton.image = UIImage.init(systemName: "")
+        }
+        else
+        {
+            self.title = "Home"
+            leftBarButton.image = #imageLiteral(resourceName: "menu")
+            rightBarButton.image = UIImage.init(systemName: "magnifyingglass")
+        }
+        
         getUserList()
     }
     
     func reloadData()
     {
-        let count : NSString = "\(apiResponse?.total_count ?? 0)" as NSString
-        let text : NSString = "Showing \(count) results" as NSString
+        var attStr : NSAttributedString?
         
-        let attStr = self.attributedString(from: text, boldRange: text.range(of: count as String))
+        if isFromSearch
+        {
+            let text : NSString = "Search Results for `\(searchForUser)`" as NSString
+            
+            attStr = self.attributedString(from: text, boldRange: text.range(of: searchForUser as String))
+        }
+        else
+        {
+            let count : NSString = "\(apiResponse?.total_count ?? 0)" as NSString
+            let text : NSString = "Showing \(count) results" as NSString
+            
+            attStr = self.attributedString(from: text, boldRange: text.range(of: count as String))
+        }
         
         lbl_searchResults.attributedText = attStr
     }
     
-    @IBAction func onClickSearch(_ sender: Any) {
+    @IBAction func onClickMenu(_ sender: Any) {
+        if leftBarButton.image == #imageLiteral(resourceName: "back")
+        {
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
     
+    @IBAction func onClickSearch(_ sender: Any) {
+        
+        if rightBarButton.image == UIImage.init(systemName: "magnifyingglass")
+        {
+            let searchNavVC = self.storyboard?.instantiateViewController(identifier: "SearchNavVC") as! UINavigationController
+            searchNavVC.modalPresentationStyle = .fullScreen
+            self.present(searchNavVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func onClickSortBy(_ sender: Any) {
-    
+        let alert = UIAlertController.init(title: "Sort By", message: "", preferredStyle: .actionSheet)
+        
+        
+        let AtoZ = UIAlertAction.init(title: "Name (A - Z)", style: .default) { (action) in
+            
+            self.arrSorted = self.apiResponse?.items?.sorted(by: { (item1, item2) -> Bool in
+                return (item1.login ?? "" ).localizedCaseInsensitiveCompare(item2.login ?? "") == ComparisonResult.orderedAscending
+            })
+            
+            let text : NSString = "Sort By Name (A - Z)" as NSString
+            let attStr = self.attributedString(from: text, boldRange: text.range(of: "Name (A - Z)" as String))
+            self.btn_sortBy.setAttributedTitle(attStr, for: .normal)
+            
+            self.tblView_users.reloadData()
+        }
+        
+        let ZtoA = UIAlertAction.init(title: "Name (Z - A)", style: .default) { (action) in
+            self.arrSorted = self.apiResponse?.items?.sorted(by: { (item1, item2) -> Bool in
+                return (item1.login ?? "" ).localizedCaseInsensitiveCompare(item2.login ?? "") == ComparisonResult.orderedDescending
+            })
+            
+            let text : NSString = "Sort By Name (Z - A)" as NSString
+            let attStr = self.attributedString(from: text, boldRange: text.range(of: "Name (Z - A)" as String))
+            self.btn_sortBy.setAttributedTitle(attStr, for: .normal)
+            
+            self.tblView_users.reloadData()
+        }
+        
+        let RankUp = UIAlertAction.init(title: "Rank ↑", style: .default) { (action) in
+            self.arrSorted = self.apiResponse?.items?.sorted(by: { (item1, item2) -> Bool in
+                return (item1.score ?? 0) > (item2.score ?? 0)
+            })
+            
+            let text : NSString = "Sort By Rank ↑" as NSString
+            let attStr = self.attributedString(from: text, boldRange: text.range(of: "Rank ↑" as String))
+            self.btn_sortBy.setAttributedTitle(attStr, for: .normal)
+            
+            self.tblView_users.reloadData()
+        }
+        
+        let RankDown = UIAlertAction.init(title: "Rank ↓", style: .default) { (action) in
+            self.arrSorted = self.apiResponse?.items?.sorted(by: { (item1, item2) -> Bool in
+                return (item1.score ?? 0) > (item2.score ?? 0)
+            })
+            
+            let text : NSString = "Sort By Rank ↓" as NSString
+            let attStr = self.attributedString(from: text, boldRange: text.range(of: "Rank ↓" as String))
+            self.btn_sortBy.setAttributedTitle(attStr, for: .normal)
+            
+            self.tblView_users.reloadData()
+        }
+        
+        let Cancel = UIAlertAction.init(title: "Cancel", style: .destructive) { (action) in
+            
+        }
+        
+        alert.addAction(AtoZ)
+        alert.addAction(ZtoA)
+        alert.addAction(RankUp)
+        alert.addAction(RankDown)
+        alert.addAction(Cancel)
+        
+        self.present(alert, animated: true) {
+            
+        }
     }
     
     @objc func onClickViewDetails(_ sender: UIButton)
     {
         let userDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "UserDetailsViewController") as! UserDetailsViewController
-        userDetailVC.userName = apiResponse?.items?[sender.tag].login ?? "-"
-        userDetailVC.avatar = apiResponse?.items?[sender.tag].avatar_url ?? ""
+        userDetailVC.userName = arrSorted?[sender.tag].login ?? "-"
+        userDetailVC.avatar = arrSorted?[sender.tag].avatar_url ?? ""
         self.navigationController?.pushViewController(userDetailVC, animated: true)
     }
 }
@@ -75,14 +181,14 @@ class HomeViewController: BaseViewController {
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return apiResponse?.items?.count ?? 0
+        return arrSorted?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: userTableCell, for: indexPath) as! UsersTableViewCell
-        cell.lbl_userName.text = apiResponse?.items?[indexPath.row].login
-        cell.lbl_score.text = "\(apiResponse?.items?[indexPath.row].score ?? 0)"
-        cell.imgView_user?.kf.setImage(with: URL(string: apiResponse?.items?[indexPath.row].avatar_url ?? ""))
+        cell.lbl_userName.text = arrSorted?[indexPath.row].login
+        cell.lbl_score.text = "\(arrSorted?[indexPath.row].score ?? 0)"
+        cell.imgView_user?.kf.setImage(with: URL(string: arrSorted?[indexPath.row].avatar_url ?? ""))
         cell.btn_details.tag = indexPath.row
         cell.btn_details.addTarget(self, action: #selector(self.onClickViewDetails(_:)), for: .touchUpInside)
         return cell
@@ -98,7 +204,19 @@ extension HomeViewController
 {
     func getUserList()
     {
-        APIClient().postData(parameters: nil, wholeAPIUrl: "https://api.github.com/search/users?q=repos:%3E400+followers:%3E1000", httpMethod: .get, delegate: self) { (response) in
+        
+        var apiName = ""
+        
+        if isFromSearch
+        {
+            apiName = "https://api.github.com/search/users?q=\(searchForUser)"
+        }
+        else
+        {
+            apiName = "https://api.github.com/search/users?q=repos:%3E400+followers:%3E1000"
+        }
+        
+        APIClient().postData(parameters: nil, wholeAPIUrl: apiName, httpMethod: .get, delegate: self) { (response) in
             
             let resp = response as! [String : Any]
             do {
@@ -110,6 +228,7 @@ extension HomeViewController
                 print("Unexpected error: \(error).")
             }
             
+            self.arrSorted = self.apiResponse?.items
             print(self.apiResponse?.total_count ?? 0)
             
             self.reloadData()

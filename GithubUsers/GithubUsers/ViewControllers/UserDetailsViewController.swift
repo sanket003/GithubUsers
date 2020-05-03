@@ -57,11 +57,14 @@ class UserDetailsViewController: BaseViewController {
     {
         imgView_user.kf.setImage(with: URL(string: avatar))
         lbl_userName.text = userName
-        lbl_repoName.text = apiResponse?[0].name
-        lbl_repoDesc.text = apiResponse?[0].description ?? "-"
-        lbl_repoURL.text = apiResponse?[0].html_url ?? "-"
-        lbl_repoLang.text = apiResponse?[0].language ?? "-"
-        lbl_repoCreationDate.text = apiResponse?[0].created_at?.changeDateFormat() ?? "-"
+        if apiResponse?.count ?? 0 > 0
+        {
+            lbl_repoName.text = apiResponse?[0].name
+            lbl_repoDesc.text = apiResponse?[0].description ?? "-"
+            lbl_repoURL.text = apiResponse?[0].html_url ?? "-"
+            lbl_repoLang.text = apiResponse?[0].language ?? "-"
+            lbl_repoCreationDate.text = apiResponse?[0].created_at?.changeDateFormat() ?? "-"
+        }
     }
     
     @IBAction func onClickBack(_ sender: Any) {
