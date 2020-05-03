@@ -173,6 +173,7 @@ class HomeViewController: BaseViewController {
         let userDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "UserDetailsViewController") as! UserDetailsViewController
         userDetailVC.userName = arrSorted?[sender.tag].login ?? "-"
         userDetailVC.avatar = arrSorted?[sender.tag].avatar_url ?? ""
+        userDetailVC.profileUrl = arrSorted?[sender.tag].html_url ?? ""
         self.navigationController?.pushViewController(userDetailVC, animated: true)
     }
 }

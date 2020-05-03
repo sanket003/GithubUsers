@@ -21,6 +21,7 @@ class UserDetailsViewController: BaseViewController {
     
     var userName = ""
     var avatar = ""
+    var profileUrl = ""
     var apiResponse: [UserDetailsModel]?
     
     override func viewDidLoad() {
@@ -69,6 +70,24 @@ class UserDetailsViewController: BaseViewController {
     
     @IBAction func onClickBack(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func onClickViewProfile(_ sender: Any) {
+        guard let url = URL(string: profileUrl) else { return }
+        UIApplication.shared.open(url)
+    }
+    
+    @IBAction func onClickRepositoryURL(_ sender: Any) {
+        if apiResponse?.count ?? 0 > 0
+        {
+            let repoURL = apiResponse?[0].html_url ?? "-"
+            
+            if !(repoURL == "" || repoURL == "-")
+            {
+                guard let url = URL(string: repoURL) else { return }
+                UIApplication.shared.open(url)
+            }
+        }
     }
 }
 
